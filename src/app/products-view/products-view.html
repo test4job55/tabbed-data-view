@@ -1,0 +1,69 @@
+<div class="products-container">
+  <h2>Product Gallery</h2>
+  
+
+  <div *ngIf="loading" class="loading-container">
+    <p>Loading products...</p>
+  </div>
+  
+  <div *ngIf="!loading">
+  
+    <div class="filter-container">
+      <input type="text" pInputText [(ngModel)]="filterText" placeholder="Filter..." />
+      <div class="filter-status" *ngIf="filterText">
+        <small>Showing {{ filteredProducts.length }} of {{ products.length }} products</small>
+        <button pButton type="button" icon="pi pi-times" class="p-button-text p-button-sm" (click)="filterText = ''"></button>
+      </div>
+    </div>
+    
+
+    <p-tabView>
+      <p-tabPanel header="Table View">
+        <p-table [value]="filteredProducts" [paginator]="true" [rows]="10">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Image</th>
+              <th pSortableColumn="title">Title <p-sortIcon field="title"></p-sortIcon></th>
+              <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+              <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-product>
+            <tr>
+              <td>
+                <img *ngIf="product.thumbnail" [src]="product.thumbnail" [alt]="product.title" width="50" height="50" style="object-fit: cover; border-radius: 4px;">
+                <span *ngIf="!product.thumbnail">No image</span>
+              </td>
+              <td>{{ product.title }}</td>
+              <td>{{ product.description }}</td>
+              <td>${{ product.price }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="4" class="text-center">No products found.</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+
+      <p-tabPanel header="Snippet View">
+        <div class="card-container">
+          <div class="p-card" *ngFor="let product of filteredProducts">
+            <div class="p-card-image" *ngIf="product.images && product.images.length > 0" style="padding: 15px 0; overflow: hidden; text-align: center;">
+              <img [src]="product.images[0]" [alt]="product.title" class="product-image" style="width: 80px; height: 80px; object-fit: cover; display: inline-block; border-radius: 5px;">
+            </div>
+            <div class="p-card-title">{{ product.title }}</div>
+            <div class="p-card-content">
+              <p>{{ product.description }}</p>
+              <p><i class="pi pi-tag"></i> ${{ product.price }}</p>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="filteredProducts.length === 0" class="no-products">
+          <p>No products match your filter criteria.</p>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
